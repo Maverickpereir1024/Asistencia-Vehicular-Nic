@@ -166,7 +166,7 @@ class _HomeScreenState extends State<HomeScreen> {
         leading: IconButton(
           icon: const Icon(
             Icons.menu_rounded,
-            color: Color.fromARGB(255, 37, 193, 16),
+            color: Color.fromARGB(255, 246, 249, 245),
           ),
           onPressed: () => _scaffoldKey.currentState?.openDrawer(),
           tooltip: 'Menú',
@@ -313,7 +313,7 @@ class _HeroSection extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFF1A1A1A), Color(0xFF2D0000)],
+          colors: [Color(0xFF1A1A1A), Color.fromARGB(255, 245, 243, 243)],
         ),
       ),
       child: Column(
