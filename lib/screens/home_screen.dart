@@ -275,7 +275,7 @@ class _HomeScreenState extends State<HomeScreen> {
       // ── FAB WhatsApp ─────────────────────────────────────
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _openWhatsApp,
-        backgroundColor: const Color.fromARGB(255, 8, 196, 17),
+        backgroundColor: const Color.fromARGB(255, 2, 7, 2),
         icon: const FaIcon(
           FontAwesomeIcons.whatsapp,
           color: Color.fromARGB(255, 12, 145, 12),
@@ -283,7 +283,7 @@ class _HomeScreenState extends State<HomeScreen> {
         label: Text(
           'WhatsApp',
           style: GoogleFonts.poppins(
-            color: Colors.white,
+            color: const Color.fromARGB(255, 5, 209, 5),
             fontWeight: FontWeight.w600,
           ),
         ),
