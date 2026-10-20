@@ -275,7 +275,7 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: const Color.fromARGB(255, 8, 196, 17),
         icon: const FaIcon(
           FontAwesomeIcons.whatsapp,
-          color: Color.fromARGB(255, 224, 227, 224),
+          color: Color.fromARGB(255, 12, 145, 12),
         ),
         label: Text(
           'WhatsApp',
