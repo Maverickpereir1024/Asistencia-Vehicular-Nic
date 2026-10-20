@@ -313,7 +313,7 @@ class _HeroSection extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFF1A1A1A), Color.fromARGB(255, 245, 243, 243)],
+          colors: [Color.fromARGB(255, 240, 236, 236), Color.fromARGB(255, 245, 243, 243)],
         ),
       ),
       child: Column(
