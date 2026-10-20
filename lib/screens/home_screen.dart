@@ -164,7 +164,10 @@ class _HomeScreenState extends State<HomeScreen> {
         elevation: 0,
         titleSpacing: 0,
         leading: IconButton(
-          icon: const Icon(Icons.menu_rounded, color: Color.fromARGB(255, 37, 193, 16)),
+          icon: const Icon(
+            Icons.menu_rounded,
+            color: Color.fromARGB(255, 37, 193, 16),
+          ),
           onPressed: () => _scaffoldKey.currentState?.openDrawer(),
           tooltip: 'Menú',
         ),
