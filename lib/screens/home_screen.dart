@@ -314,8 +314,8 @@ class _HeroSection extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Color.fromARGB(255, 144, 152, 201),
-            Color.fromARGB(255, 34, 23, 146),
+            Color.fromARGB(20, 74, 140, 255),
+            Color.fromARGB(226, 234, 134, 3),
           ],
         ),
       ),
