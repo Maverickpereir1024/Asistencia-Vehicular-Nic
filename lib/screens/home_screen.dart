@@ -313,6 +313,7 @@ class _HeroSection extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
+          //colores del fondo degradado de la sección hero
           colors: [
             Color.fromARGB(255, 10, 75, 130),
             Color.fromARGB(255, 232, 108, 0),
@@ -395,7 +396,7 @@ class _HeroSection extends StatelessWidget {
               ),
               _HeroChip(
                 icon: Icons.verified_rounded,
-                label: 'Profesionales certificados',
+                label: 'Asistencia inmediata',
               ),
             ],
           ).animate().fadeIn(delay: 600.ms, duration: 600.ms),
