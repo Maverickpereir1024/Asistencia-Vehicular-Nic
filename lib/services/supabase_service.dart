@@ -7,13 +7,10 @@ class SupabaseService {
   static const String _bucketName = 'Imagenes de servicios';
 
   /// Obtiene la URL pública de una imagen alojada en tu Storage de Supabase
-  /// y asegura que los espacios y caracteres especiales se codifiquen correctamente (%20).
   static String getPublicUrl(String fileName) {
-    final rawUrl = Supabase.instance.client.storage
+    return Supabase.instance.client.storage
         .from(_bucketName)
         .getPublicUrl(fileName);
-
-    return Uri.encodeFull(rawUrl);
   }
 
   /// Obtiene las imágenes de los trabajos:
