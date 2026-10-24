@@ -47,7 +47,7 @@ class SupabaseService {
           );
         }).toList();
       }
-    } catch (e) {
+    } catch (_) {
       // Ignoramos y pasamos al siguiente método
     }
 
@@ -78,6 +78,8 @@ class SupabaseService {
       return 'Cambio de Llanta';
     } else if (lower.contains('bateria') && lower.contains('diagnost')) {
       return 'Diagnóstico de Batería';
+    } else if (lower.contains('diagnost')) {
+      return 'Diagnósticos Confiables';
     } else if (lower.contains('bateria')) {
       return 'Paso de Corriente / Batería';
     } else if (lower.contains('abrir') || lower.contains('carro') || lower.contains('cerraj')) {
@@ -97,29 +99,31 @@ class SupabaseService {
       return 'Cambio rápido y seguro en carretera';
     } else if (lower.contains('bateria') && lower.contains('diagnost')) {
       return 'Diagnósticos de baterías y detección de fallas';
+    } else if (lower.contains('diagnost')) {
+      return 'Detección rápida y precisa de fallas';
     } else if (lower.contains('bateria')) {
       return 'Batería descargada, solución inmediata en el lugar';
-    } else if (lower.contains('abrir') || lower.contains('carro')) {
+    } else if (lower.contains('abrir') || lower.contains('carro') || lower.contains('cerraj')) {
       return 'Apertura de vehículo profesional y sin daños';
     }
     return 'Atención profesional y garantizada 24/7';
   }
 
-  /// Lista de respaldo con los nombres EXACTOS de tus archivos en Supabase
+  /// Lista de respaldo con los nombres EXACTOS verificados de tus archivos en Supabase
   static List<JobImage> _fallbackImages() {
     return [
       JobImage(
         id: '1',
-        imageUrl: getPublicUrl('cambio de llanta.jpeg'),
+        imageUrl: getPublicUrl('cambiodellanta.jpeg'),
         title: 'Cambio de Llanta',
-        description: 'Cambio rápido en carretera',
+        description: 'Cambio rápido y seguro en carretera',
         createdAt: DateTime.now(),
       ),
       JobImage(
         id: '2',
-        imageUrl: getPublicUrl('baterias.jpeg'), // Corregido: 'b' minúscula
+        imageUrl: getPublicUrl('baterias.jpeg'),
         title: 'Paso de Corriente',
-        description: 'Batería descargada, solución inmediata',
+        description: 'Batería descargada, solución inmediata en el lugar',
         createdAt: DateTime.now(),
       ),
       JobImage(
@@ -131,9 +135,58 @@ class SupabaseService {
       ),
       JobImage(
         id: '4',
-        imageUrl: getPublicUrl('diagnostico de bateria.jpeg'),
-        title: 'Diagnósticos rápidos y efectivos',
+        imageUrl: getPublicUrl('Diagnostico de baterias.jpeg'),
+        title: 'Diagnósticos Rápidos y Efectivos',
         description: 'Diagnósticos de baterías y detección de fallas',
+        createdAt: DateTime.now(),
+      ),
+      JobImage(
+        id: '5',
+        imageUrl: getPublicUrl('cambio de llanta1.jpeg'),
+        title: 'Cambio de Llanta Auxilio',
+        description: 'Atención inmediata ante emergencias de neumáticos',
+        createdAt: DateTime.now(),
+      ),
+      JobImage(
+        id: '6',
+        imageUrl: getPublicUrl('cambiodellanta 4.jpeg'),
+        title: 'Asistencia de Llanta',
+        description: 'Montaje profesional en cualquier punto',
+        createdAt: DateTime.now(),
+      ),
+      JobImage(
+        id: '7',
+        imageUrl: getPublicUrl('cambiodellanta3.jpeg'),
+        title: 'Sustitución de Neumático',
+        description: 'Llegamos donde estés para que sigas tu camino',
+        createdAt: DateTime.now(),
+      ),
+      JobImage(
+        id: '8',
+        imageUrl: getPublicUrl('cerrajeria.jpeg'),
+        title: 'Cerrajería Profesional',
+        description: 'Técnicas especializadas para aperturas seguras',
+        createdAt: DateTime.now(),
+      ),
+      JobImage(
+        id: '9',
+        imageUrl: getPublicUrl('cerrajeria1.jpeg'),
+        title: 'Llaves Encerradas o Extraviadas',
+        description: 'Solución rápida sin forzar ni rayar tu auto',
+        createdAt: DateTime.now(),
+      ),
+      JobImage(
+        id: '10',
+        imageUrl: getPublicUrl('cerrajeria2.jpeg'),
+        title: 'Cerrajería Móvil 24/7',
+        description: 'Atención a todas las marcas y modelos',
+        createdAt: DateTime.now(),
+      ),
+      JobImage(
+        id: '11',
+        imageUrl: getPublicUrl('Diagnostico confiables.jpeg'),
+        title: 'Diagnóstico Integral',
+        description: 'Chequeo técnico confiable en el sitio',
         createdAt: DateTime.now(),
       ),
     ];

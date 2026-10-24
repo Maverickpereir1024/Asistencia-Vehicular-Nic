@@ -82,6 +82,14 @@ class _HomeScreenState extends State<HomeScreen> {
         _jobImages = images;
         _isLoading = false;
       });
+
+      // Pre-cargar imágenes en la memoria de Flutter Web para evitar
+      // parpadeos y que se queden en negro al deslizar el carrusel repetidamente
+      for (final img in images) {
+        if (mounted) {
+          precacheImage(NetworkImage(img.imageUrl), context).catchError((_) {});
+        }
+      }
     }
   }
 
@@ -130,7 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
       // webOnlyWindowName: '_blank' fuerza a que se abra en una nueva pestaña
       await launchUrl(uri, webOnlyWindowName: '_blank');
     } catch (e) {
-      print('Error al abrir WhatsApp: $e');
+      debugPrint('Error al abrir WhatsApp: $e');
     }
   }
 
@@ -141,7 +149,7 @@ class _HomeScreenState extends State<HomeScreen> {
       // Al ejecutar esto, el navegador del usuario abrirá su cliente de correo predeterminado
       await launchUrl(uri);
     } catch (e) {
-      print('Error al abrir el correo: $e');
+      debugPrint('Error al abrir el correo: $e');
     }
   }
 

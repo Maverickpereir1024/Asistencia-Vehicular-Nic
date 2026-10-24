@@ -4,9 +4,8 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../config/app_config.dart';
 import '../models/job_image.dart';
 
 class JobCarousel extends StatefulWidget {
@@ -26,7 +25,11 @@ class _JobCarouselState extends State<JobCarousel> {
     if (widget.images.isEmpty) {
       return const SizedBox(
         height: 320,
-        child: Center(child: CircularProgressIndicator()),
+        child: Center(
+          child: CircularProgressIndicator(
+            color: Color(AppConfig.primaryColorHex),
+          ),
+        ),
       );
     }
 
@@ -35,7 +38,11 @@ class _JobCarouselState extends State<JobCarousel> {
         CarouselSlider.builder(
           itemCount: widget.images.length,
           itemBuilder: (context, index, realIndex) {
-            return _CarouselCard(image: widget.images[index]);
+            final image = widget.images[index];
+            return _CarouselCard(
+              key: ValueKey('carousel_${image.imageUrl}_$index'),
+              image: image,
+            );
           },
           options: CarouselOptions(
             height: 340,
@@ -46,6 +53,7 @@ class _JobCarouselState extends State<JobCarousel> {
             autoPlayInterval: const Duration(seconds: 4),
             autoPlayAnimationDuration: const Duration(milliseconds: 600),
             autoPlayCurve: Curves.easeInOut,
+            enableInfiniteScroll: widget.images.length > 1,
             onPageChanged: (index, reason) {
               setState(() => _currentIndex = index);
             },
@@ -57,7 +65,7 @@ class _JobCarouselState extends State<JobCarousel> {
           count: widget.images.length,
           effect: const ExpandingDotsEffect(
             dotColor: Color(0xFFCBD5E1),
-            activeDotColor: Color(0xFFFF7300),
+            activeDotColor: Color(AppConfig.accentColorHex),
             dotHeight: 8,
             dotWidth: 8,
             expansionFactor: 3,
@@ -71,13 +79,14 @@ class _JobCarouselState extends State<JobCarousel> {
 class _CarouselCard extends StatelessWidget {
   final JobImage image;
 
-  const _CarouselCard({required this.image});
+  const _CarouselCard({super.key, required this.image});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8),
       decoration: BoxDecoration(
+        color: const Color(0xFF1E293B),
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
@@ -92,23 +101,59 @@ class _CarouselCard extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            // Imagen
-            CachedNetworkImage(
-              imageUrl: image.imageUrl,
+            // Imagen nativa con cache en memoria y manejo fluido en Flutter Web
+            Image.network(
+              image.imageUrl,
               fit: BoxFit.cover,
-              placeholder: (context, url) => Shimmer.fromColors(
-                baseColor: Colors.grey[800]!,
-                highlightColor: Colors.grey[600]!,
-                child: Container(color: Colors.grey[800]),
-              ),
-              errorWidget: (context, url, error) => Container(
-                color: Colors.grey[800],
-                child:
-                    const Icon(Icons.image_not_supported, color: Colors.white54),
-              ),
+              gaplessPlayback: true,
+              filterQuality: FilterQuality.medium,
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) return child;
+                return Container(
+                  color: const Color(0xFF1E293B),
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      value: loadingProgress.expectedTotalBytes != null
+                          ? loadingProgress.cumulativeBytesLoaded /
+                              loadingProgress.expectedTotalBytes!
+                          : null,
+                      strokeWidth: 2.5,
+                      color: const Color(AppConfig.accentColorHex),
+                    ),
+                  ),
+                );
+              },
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  color: const Color(0xFF1E293B),
+                  padding: const EdgeInsets.all(16),
+                  child: Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(
+                          Icons.car_repair_rounded,
+                          color: Colors.white54,
+                          size: 44,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          image.title,
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.poppins(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
             ),
 
-            // Gradiente inferior
+            // Gradiente inferior para legibilidad del texto
             Positioned.fill(
               child: DecoratedBox(
                 decoration: BoxDecoration(
@@ -117,38 +162,45 @@ class _CarouselCard extends StatelessWidget {
                     end: Alignment.bottomCenter,
                     colors: [
                       Colors.transparent,
-                      Colors.black.withAlpha(180),
+                      Colors.black.withAlpha(190),
                     ],
-                    stops: const [0.5, 1.0],
+                    stops: const [0.45, 1.0],
                   ),
                 ),
               ),
             ),
 
-            // Texto
+            // Título y descripción del servicio
             Positioned(
               bottom: 20,
               left: 20,
               right: 20,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
                     image.title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: GoogleFonts.poppins(
                       color: Colors.white,
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  if (image.description != null)
+                  if (image.description != null && image.description!.isNotEmpty) ...[
+                    const SizedBox(height: 4),
                     Text(
                       image.description!,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.poppins(
                         color: Colors.white70,
                         fontSize: 13,
                       ),
                     ),
+                  ],
                 ],
               ),
             ),
