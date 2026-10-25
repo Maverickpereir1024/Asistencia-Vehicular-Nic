@@ -243,7 +243,7 @@ class _HomeScreenState extends State<HomeScreen> {
               onPressed: _callPhone,
               icon: const Icon(
                 Icons.phone,
-                color: Color(AppConfig.primaryColorHex),
+                color: Color.fromARGB(255, 22, 233, 36),
                 size: 20,
               ),
               tooltip: 'Llamar a ${AppConfig.phoneNumber}',
