@@ -43,19 +43,25 @@ class SideMenu extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  width: 60,
+                  width: 80, // Ligeramente más ancho para acomodar la forma horizontal del logo
                   height: 60,
+                  padding: const EdgeInsets.all(
+                    6,
+                  ), // Espacio interno para que el logo respire
                   decoration: BoxDecoration(
-                    color: Colors.white.withAlpha(20),
+                    color: Colors.black, // Fondo negro sólido
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: Colors.white24),
+                    // Se eliminó el border: Border.all() para quitar las líneas blancas
                   ),
                   clipBehavior: Clip.antiAlias,
                   child: Image.asset(
-                    'assets/images/Isotipo_clean.png',
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) =>
-                        const Icon(Icons.directions_car, size: 40),
+                    'assets/images/Isotipo_clean.png', // Usa aquí tu PNG sin fondo original
+                    fit: BoxFit.contain, // CRÍTICO: 'contain' evita que se corten los lados de la imagen
+                    errorBuilder: (context, error, stackTrace) => const Icon(
+                      Icons.directions_car,
+                      size: 40,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 16),
