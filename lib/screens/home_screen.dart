@@ -402,7 +402,7 @@ class _HeroSection extends StatelessWidget {
                   ),
                   child: ClipOval(
                     child: Image.asset(
-                      '/assets/images/logocircular.jpeg',
+                      'assets/images/logocircular_clean.png',
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) => const Icon(
                         Icons.local_shipping_rounded,
@@ -1063,7 +1063,7 @@ class _Footer extends StatelessWidget {
                 ),
                 clipBehavior: Clip.antiAlias,
                 child: Image.asset(
-                  'assets/images/logo.jpeg',
+                  'assets/images/logocircular_clean.png', // Cambia tu archivo a PNG transparente
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) => const Icon(
                     Icons.directions_car,
