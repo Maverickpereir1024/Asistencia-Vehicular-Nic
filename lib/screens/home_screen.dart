@@ -232,7 +232,7 @@ class _HomeScreenState extends State<HomeScreen> {
               label: Text(
                 AppConfig.phoneNumber,
                 style: GoogleFonts.poppins(
-                  color: const Color(AppConfig.primaryColorHex),
+                  color: const Color.fromARGB(255, 9, 209, 56),
                   fontSize: 13,
                 ),
               ),
