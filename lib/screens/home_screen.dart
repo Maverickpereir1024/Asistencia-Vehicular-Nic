@@ -129,10 +129,14 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Future<void> _openWhatsApp() async {
+  Future<void> _openWhatsApp([String? serviceName]) async {
     // El número debe ir con el código de país pero sin el '+' (Ej: 50581695674)
     const String number = '50581695674';
-    final uri = Uri.parse('https://wa.me/$number');
+    final String message = serviceName != null
+        ? 'Hola Asistencia Vehicular Nic, necesito asistencia para *$serviceName* por favor.'
+        : 'Hola Asistencia Vehicular Nic, necesito asistencia vehicular.';
+    final uri = Uri.parse(
+        'https://wa.me/$number?text=${Uri.encodeComponent(message)}');
 
     try {
       // webOnlyWindowName: '_blank' fuerza a que se abra en una nueva pestaña
@@ -263,7 +267,12 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
 
             // ── CARACTERÍSTICAS ──────────────────────────
-            _FeaturesSection(key: _featuresKey, features: _features),
+            _FeaturesSection(
+              key: _featuresKey,
+              features: _features,
+              scrollController: _scrollController,
+              onServiceTap: (service) => _openWhatsApp(service),
+            ),
 
             // ── CONTACTO ─────────────────────────────────
             _ContactSection(
@@ -504,8 +513,15 @@ class _CarouselSection extends StatelessWidget {
 // ============================================================
 class _FeaturesSection extends StatelessWidget {
   final List<_Feature> features;
+  final ScrollController? scrollController;
+  final void Function(String serviceName)? onServiceTap;
 
-  const _FeaturesSection({super.key, required this.features});
+  const _FeaturesSection({
+    super.key,
+    required this.features,
+    this.scrollController,
+    this.onServiceTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -521,24 +537,29 @@ class _FeaturesSection extends StatelessWidget {
           const SizedBox(height: 40),
           LayoutBuilder(
             builder: (context, constraints) {
-              final crossAxisCount = constraints.maxWidth > 750
+              final crossAxisCount = constraints.maxWidth > 800
                   ? 3
-                  : (constraints.maxWidth > 500 ? 2 : 1);
-              final childAspectRatio = constraints.maxWidth > 750
+                  : (constraints.maxWidth > 550 ? 2 : 1);
+              final childAspectRatio = constraints.maxWidth > 800
                   ? 1.15
-                  : (constraints.maxWidth > 500 ? 1.0 : 1.7);
+                  : (constraints.maxWidth > 550 ? 1.05 : 1.35);
               return GridView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: crossAxisCount,
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
+                  crossAxisSpacing: 18,
+                  mainAxisSpacing: 18,
                   childAspectRatio: childAspectRatio,
                 ),
                 itemCount: features.length,
                 itemBuilder: (context, index) {
-                  return _FeatureCard(feature: features[index], index: index);
+                  return _FeatureCard(
+                    feature: features[index],
+                    index: index,
+                    scrollController: scrollController,
+                    onTap: onServiceTap,
+                  );
                 },
               );
             },
@@ -564,8 +585,15 @@ class _Feature {
 class _FeatureCard extends StatefulWidget {
   final _Feature feature;
   final int index;
+  final ScrollController? scrollController;
+  final void Function(String serviceName)? onTap;
 
-  const _FeatureCard({required this.feature, required this.index});
+  const _FeatureCard({
+    required this.feature,
+    required this.index,
+    this.scrollController,
+    this.onTap,
+  });
 
   @override
   State<_FeatureCard> createState() => _FeatureCardState();
@@ -573,52 +601,160 @@ class _FeatureCard extends StatefulWidget {
 
 class _FeatureCardState extends State<_FeatureCard> {
   bool _hovered = false;
+  bool _isVisible = false;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.scrollController?.addListener(_checkVisibility);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkVisibility();
+    });
+    // Verificación de respaldo para asegurar visibilidad en cualquier dispositivo
+    Future.delayed(const Duration(milliseconds: 1500), () {
+      if (mounted && !_isVisible) {
+        _checkVisibility();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    widget.scrollController?.removeListener(_checkVisibility);
+    super.dispose();
+  }
+
+  void _checkVisibility() {
+    if (_isVisible || !mounted) return;
+    final renderBox = context.findRenderObject() as RenderBox?;
+    if (renderBox != null && renderBox.hasSize) {
+      final position = renderBox.localToGlobal(Offset.zero);
+      final screenHeight = MediaQuery.of(context).size.height;
+      // Cuando la tarjeta entra en el rango visible (92% de la altura de la ventana)
+      if (position.dy < screenHeight * 0.92) {
+        setState(() {
+          _isVisible = true;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      child:
-          AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                padding: const EdgeInsets.all(20),
+    return AnimatedOpacity(
+      opacity: _isVisible ? 1.0 : 0.0,
+      duration: const Duration(milliseconds: 650),
+      curve: Curves.easeOutCubic,
+      child: AnimatedSlide(
+        offset: _isVisible
+            ? (_hovered ? const Offset(0, -0.035) : Offset.zero)
+            : const Offset(0, 0.22),
+        duration: _isVisible
+            ? (_hovered
+                ? const Duration(milliseconds: 200)
+                : const Duration(milliseconds: 650))
+            : const Duration(milliseconds: 650),
+        curve: Curves.easeOutCubic,
+        child: AnimatedScale(
+          scale: _isVisible ? (_hovered ? 1.025 : 1.0) : 0.94,
+          duration: _isVisible
+              ? (_hovered
+                  ? const Duration(milliseconds: 200)
+                  : const Duration(milliseconds: 650))
+              : const Duration(milliseconds: 650),
+          curve: Curves.easeOutCubic,
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(20),
+              onTap: () => widget.onTap?.call(widget.feature.title),
+              onHover: (hovering) => setState(() => _hovered = hovering),
+              onHighlightChanged: (highlighted) =>
+                  setState(() => _hovered = highlighted),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 250),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 22),
                 decoration: BoxDecoration(
-                  color: _hovered
-                      ? const Color(AppConfig.primaryColorHex).withAlpha(20)
-                      : const Color(0xFF1E1E1E),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: _hovered
+                        ? [
+                            const Color(0xFF1E293B),
+                            const Color(0xFF0F172A),
+                          ]
+                        : [
+                            const Color(0xFF1B2232),
+                            const Color(0xFF121722),
+                          ],
+                  ),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
                     color: _hovered
-                        ? const Color(AppConfig.primaryColorHex).withAlpha(120)
-                        : Colors.white12,
+                        ? const Color(AppConfig.cyanColorHex)
+                        : Colors.white.withAlpha(22),
+                    width: _hovered ? 1.8 : 1.2,
                   ),
-                  boxShadow: _hovered
-                      ? [
-                          BoxShadow(
-                            color: const Color(AppConfig.primaryColorHex)
-                                .withAlpha(40),
-                            blurRadius: 20,
-                            spreadRadius: 2,
-                          ),
-                        ]
-                      : [],
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withAlpha(_hovered ? 150 : 100),
+                      blurRadius: _hovered ? 24 : 16,
+                      offset: Offset(0, _hovered ? 12 : 7),
+                    ),
+                    BoxShadow(
+                      color: const Color(AppConfig.cyanColorHex).withAlpha(
+                        _hovered ? 85 : 20,
+                      ),
+                      blurRadius: _hovered ? 20 : 10,
+                      spreadRadius: _hovered ? 1 : 0,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
-                      widget.feature.icon,
-                      color: const Color(AppConfig.primaryColorHex),
-                      size: 40,
+                    // Badge circular con brillo
+                    Container(
+                      width: 54,
+                      height: 54,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color:
+                            const Color(AppConfig.primaryColorHex).withAlpha(40),
+                        border: Border.all(
+                          color: _hovered
+                              ? const Color(AppConfig.cyanColorHex)
+                              : const Color(AppConfig.cyanColorHex).withAlpha(120),
+                          width: 1.5,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: _hovered
+                                ? const Color(AppConfig.cyanColorHex).withAlpha(70)
+                                : const Color(AppConfig.primaryColorHex).withAlpha(30),
+                            blurRadius: 12,
+                          ),
+                        ],
+                      ),
+                      child: Center(
+                        child: Icon(
+                          widget.feature.icon,
+                          color: _hovered
+                              ? const Color(AppConfig.cyanColorHex)
+                              : const Color(0xFF38BDF8),
+                          size: 28,
+                        ),
+                      ),
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 14),
                     Text(
                       widget.feature.title,
                       style: GoogleFonts.poppins(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
-                        fontSize: 14,
+                        fontSize: 15,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -626,20 +762,46 @@ class _FeatureCardState extends State<_FeatureCard> {
                     Text(
                       widget.feature.description,
                       style: GoogleFonts.poppins(
-                        color: Colors.white54,
-                        fontSize: 11,
-                        height: 1.5,
+                        color: const Color(0xFF94A3B8),
+                        fontSize: 12,
+                        height: 1.45,
                       ),
                       textAlign: TextAlign.center,
-                      maxLines: 4,
+                      maxLines: 3,
                       overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 12),
+                    // Indicador de acción interactivo
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Pedir asistencia',
+                          style: GoogleFonts.poppins(
+                            color: _hovered
+                                ? const Color(AppConfig.accentColorHex)
+                                : const Color(0xFF64748B),
+                            fontSize: 11.5,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        Icon(
+                          Icons.arrow_forward_rounded,
+                          size: 13,
+                          color: _hovered
+                              ? const Color(AppConfig.accentColorHex)
+                              : const Color(0xFF64748B),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              )
-              .animate()
-              .fadeIn(delay: (widget.index * 100).ms, duration: 500.ms)
-              .slideY(begin: 0.2),
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
