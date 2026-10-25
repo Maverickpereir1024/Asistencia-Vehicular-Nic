@@ -226,7 +226,7 @@ class _HomeScreenState extends State<HomeScreen> {
               onPressed: _callPhone,
               icon: const Icon(
                 Icons.phone,
-                color: Color(AppConfig.primaryColorHex),
+                color: Color.fromARGB(255, 6, 226, 68),
                 size: 18,
               ),
               label: Text(
