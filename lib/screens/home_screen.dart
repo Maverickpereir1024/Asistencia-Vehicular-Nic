@@ -312,6 +312,39 @@ class _HomeScreenState extends State<HomeScreen> {
 // ============================================================
 // SECCIÓN: HERO
 // ============================================================
+
+/// Clipper que genera una ola suave en la parte inferior de la sección Hero
+class _HeroWaveClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final path = Path();
+    // Esquina superior izquierda → derecha
+    path.lineTo(0, 0);
+    path.lineTo(size.width, 0);
+    // Baja al punto antes de la ola
+    path.lineTo(size.width, size.height - 60);
+    // Primera curva: de derecha al centro, formando un pico hacia arriba
+    path.quadraticBezierTo(
+      size.width * 0.75, // control X
+      size.height - 5,  // control Y (pico hacia arriba)
+      size.width * 0.5, // fin X
+      size.height - 45, // fin Y
+    );
+    // Segunda curva: del centro hacia la izquierda, formando el valle
+    path.quadraticBezierTo(
+      size.width * 0.25, // control X
+      size.height - 90, // control Y (valle hacia abajo)
+      0,                 // fin X
+      size.height - 55, // fin Y
+    );
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
+}
+
 class _HeroSection extends StatelessWidget {
   const _HeroSection({super.key});
 
@@ -320,104 +353,110 @@ class _HeroSection extends StatelessWidget {
     final width = MediaQuery.of(context).size.width;
     final titleFontSize = width < 450 ? 28.0 : (width < 700 ? 34.0 : 42.0);
 
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.symmetric(
-        horizontal: width < 500 ? 16 : 32,
-        vertical: width < 500 ? 40 : 64,
-      ),
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          //colores del fondo degradado de la sección hero
-          colors: [
-            Color.fromARGB(255, 10, 75, 130),
-            Color.fromARGB(255, 232, 108, 0),
+    return ClipPath(
+      clipper: _HeroWaveClipper(),
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.only(
+          left: width < 500 ? 16 : 32,
+          right: width < 500 ? 16 : 32,
+          top: width < 500 ? 40 : 64,
+          // Espacio extra en la parte inferior para que la ola no corte el contenido
+          bottom: (width < 500 ? 40 : 64) + 75,
+        ),
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            //colores del fondo degradado de la sección hero
+            colors: [
+              Color.fromARGB(255, 10, 75, 130),
+              Color.fromARGB(255, 232, 108, 0),
+            ],
+          ),
+        ),
+        child: Column(
+          children: [
+            Container(
+                  width: width < 500 ? 110 : 130,
+                  height: width < 500 ? 110 : 130,
+                  padding: const EdgeInsets.all(3),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: const Color(AppConfig.primaryColorHex).withAlpha(30),
+                    border: Border.all(
+                      color: const Color(AppConfig.primaryColorHex)
+                          .withAlpha(140),
+                      width: 2.5,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(AppConfig.primaryColorHex)
+                            .withAlpha(60),
+                        blurRadius: 20,
+                        spreadRadius: 2,
+                      ),
+                    ],
+                  ),
+                  child: ClipOval(
+                    child: Image.asset(
+                      '/assets/images/logocircular.jpeg',
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => const Icon(
+                        Icons.local_shipping_rounded,
+                        color: Color(AppConfig.primaryColorHex),
+                        size: 60,
+                      ),
+                    ),
+                  ),
+                )
+                .animate()
+                .fadeIn(duration: 600.ms)
+                .scale(begin: const Offset(0.7, 0.7)),
+
+            const SizedBox(height: 28),
+
+            Text(
+                  AppConfig.companyName,
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                    fontSize: titleFontSize,
+                    fontWeight: FontWeight.bold,
+                    height: 1.1,
+                  ),
+                  textAlign: TextAlign.center,
+                )
+                .animate()
+                .fadeIn(delay: 200.ms, duration: 600.ms)
+                .slideY(begin: 0.3),
+
+            const SizedBox(height: 12),
+
+            Text(
+              AppConfig.slogan,
+              style: GoogleFonts.poppins(color: Colors.white60, fontSize: 16),
+              textAlign: TextAlign.center,
+            ).animate().fadeIn(delay: 400.ms, duration: 600.ms),
+
+            const SizedBox(height: 32),
+
+            const Wrap(
+              alignment: WrapAlignment.center,
+              spacing: 12,
+              runSpacing: 10,
+              children: [
+                _HeroChip(
+                  icon: Icons.access_time_rounded,
+                  label: AppConfig.schedule,
+                ),
+                _HeroChip(
+                  icon: Icons.verified_rounded,
+                  label: 'Asistencia inmediata',
+                ),
+              ],
+            ).animate().fadeIn(delay: 600.ms, duration: 600.ms),
           ],
         ),
-      ),
-      child: Column(
-        children: [
-          Container(
-                width: width < 500 ? 110 : 130,
-                height: width < 500 ? 110 : 130,
-                padding: const EdgeInsets.all(3),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: const Color(AppConfig.primaryColorHex).withAlpha(30),
-                  border: Border.all(
-                    color: const Color(AppConfig.primaryColorHex)
-                        .withAlpha(140),
-                    width: 2.5,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(AppConfig.primaryColorHex)
-                          .withAlpha(60),
-                      blurRadius: 20,
-                      spreadRadius: 2,
-                    ),
-                  ],
-                ),
-                child: ClipOval(
-                  child: Image.asset(
-                    '/assets/images/logocircular.jpeg',
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => const Icon(
-                      Icons.local_shipping_rounded,
-                      color: Color(AppConfig.primaryColorHex),
-                      size: 60,
-                    ),
-                  ),
-                ),
-              )
-              .animate()
-              .fadeIn(duration: 600.ms)
-              .scale(begin: const Offset(0.7, 0.7)),
-
-          const SizedBox(height: 28),
-
-          Text(
-                AppConfig.companyName,
-                style: GoogleFonts.poppins(
-                  color: Colors.white,
-                  fontSize: titleFontSize,
-                  fontWeight: FontWeight.bold,
-                  height: 1.1,
-                ),
-                textAlign: TextAlign.center,
-              )
-              .animate()
-              .fadeIn(delay: 200.ms, duration: 600.ms)
-              .slideY(begin: 0.3),
-
-          const SizedBox(height: 12),
-
-          Text(
-            AppConfig.slogan,
-            style: GoogleFonts.poppins(color: Colors.white60, fontSize: 16),
-            textAlign: TextAlign.center,
-          ).animate().fadeIn(delay: 400.ms, duration: 600.ms),
-
-          const SizedBox(height: 32),
-
-          const Wrap(
-            alignment: WrapAlignment.center,
-            spacing: 12,
-            runSpacing: 10,
-            children: [
-              _HeroChip(
-                icon: Icons.access_time_rounded,
-                label: AppConfig.schedule,
-              ),
-              _HeroChip(
-                icon: Icons.verified_rounded,
-                label: 'Asistencia inmediata',
-              ),
-            ],
-          ).animate().fadeIn(delay: 600.ms, duration: 600.ms),
-        ],
       ),
     );
   }
@@ -455,6 +494,32 @@ class _HeroChip extends StatelessWidget {
 // ============================================================
 // SECCIÓN: CARRUSEL
 // ============================================================
+
+/// Clipper que genera una ola suave arriba (entra desde el Hero)
+class _WaveTopClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final path = Path();
+    // Empieza desde arriba-izquierda con la ola
+    path.moveTo(0, 60);
+    path.quadraticBezierTo(
+      size.width * 0.25, 5,
+      size.width * 0.5, 45,
+    );
+    path.quadraticBezierTo(
+      size.width * 0.75, 88,
+      size.width, 30,
+    );
+    path.lineTo(size.width, size.height);
+    path.lineTo(0, size.height);
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
+}
+
 class _CarouselSection extends StatelessWidget {
   final bool isLoading;
   final List<JobImage> jobImages;
@@ -468,41 +533,44 @@ class _CarouselSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: const Color(0xFF1A1A1A),
-      padding: const EdgeInsets.symmetric(vertical: 48),
-      child: Column(
-        children: [
-          const _SectionTitle(
-            title: 'Nuestros Trabajos',
-            subtitle: 'Mira algunos de nuestros servicios realizados',
-          ),
-          const SizedBox(height: 32),
-          if (isLoading)
-            const SizedBox(
-              height: 340,
-              child: Center(
-                child: CircularProgressIndicator(
-                  color: Color(AppConfig.primaryColorHex),
+    return ClipPath(
+      clipper: _WaveTopClipper(),
+      child: Container(
+        color: const Color(0xFF1A1A1A),
+        padding: const EdgeInsets.only(top: 80, bottom: 48),
+        child: Column(
+          children: [
+            const _SectionTitle(
+              title: 'Nuestros Trabajos',
+              subtitle: 'Mira algunos de nuestros servicios realizados',
+            ),
+            const SizedBox(height: 32),
+            if (isLoading)
+              const SizedBox(
+                height: 340,
+                child: Center(
+                  child: CircularProgressIndicator(
+                    color: Color(AppConfig.primaryColorHex),
+                  ),
                 ),
+              )
+            else
+              JobCarousel(images: jobImages),
+            const SizedBox(height: 16),
+            TextButton.icon(
+              onPressed: onRefresh,
+              icon: const Icon(
+                Icons.refresh_rounded,
+                color: Colors.white54,
+                size: 16,
               ),
-            )
-          else
-            JobCarousel(images: jobImages),
-          const SizedBox(height: 16),
-          TextButton.icon(
-            onPressed: onRefresh,
-            icon: const Icon(
-              Icons.refresh_rounded,
-              color: Colors.white54,
-              size: 16,
+              label: Text(
+                'Actualizar',
+                style: GoogleFonts.poppins(color: Colors.white54, fontSize: 12),
+              ),
             ),
-            label: Text(
-              'Actualizar',
-              style: GoogleFonts.poppins(color: Colors.white54, fontSize: 12),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
