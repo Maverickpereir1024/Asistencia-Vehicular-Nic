@@ -3,6 +3,7 @@
 // ============================================================
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import '../config/app_config.dart';
 
 class SideMenu extends StatelessWidget {
@@ -54,7 +55,7 @@ class SideMenu extends StatelessWidget {
                     'assets/images/Isotipo.png',
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) =>
-                        const Icon(Icons.directions_car, color: Colors.white, size: 36),
+                        const Icon(Icons.directions_car, size: 36),
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -124,10 +125,7 @@ class SideMenu extends StatelessWidget {
             padding: const EdgeInsets.all(20),
             child: Text(
               '© ${DateTime.now().year} ${AppConfig.companyName}',
-              style: GoogleFonts.poppins(
-                color: Colors.white38,
-                fontSize: 11,
-              ),
+              style: GoogleFonts.poppins(color: Colors.white38, fontSize: 11),
               textAlign: TextAlign.center,
             ),
           ),
@@ -166,7 +164,8 @@ class _MenuItem extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         border: isActive
             ? Border.all(
-                color: const Color(AppConfig.primaryColorHex).withAlpha(80))
+                color: const Color(AppConfig.primaryColorHex).withAlpha(80),
+              )
             : null,
       ),
       child: Material(
@@ -184,18 +183,17 @@ class _MenuItem extends StatelessWidget {
             label,
             style: GoogleFonts.poppins(
               color: isActive ? Colors.white : Colors.white70,
-              fontWeight:
-                  isActive ? FontWeight.w600 : FontWeight.normal,
+              fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
               fontSize: 14,
             ),
           ),
           trailing: isExternal
-              ? const Icon(Icons.open_in_new,
-                  color: Colors.white38, size: 16)
+              ? const Icon(Icons.open_in_new, color: Colors.white38, size: 16)
               : null,
           onTap: onTap,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
       ),
     );
