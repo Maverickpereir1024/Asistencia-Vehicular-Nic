@@ -52,7 +52,7 @@ class SideMenu extends StatelessWidget {
                   ),
                   clipBehavior: Clip.antiAlias,
                   child: Image.asset(
-                    'assets/images/Isotipo.png',
+                    'assets/images/Isotipo_clean.png',
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) =>
                         const Icon(Icons.directions_car, size: 40),

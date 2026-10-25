@@ -197,7 +197,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               clipBehavior: Clip.antiAlias,
               child: Image.asset(
-                'assets/images/logocircular.png', // Cambia tu archivo a PNG transparente
+                'assets/images/logocircular_clean.png', // Cambia tu archivo a PNG transparente
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) => const Icon(
                   Icons.directions_car,
