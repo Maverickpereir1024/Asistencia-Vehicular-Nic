@@ -55,7 +55,7 @@ class SideMenu extends StatelessWidget {
                     'assets/images/Isotipo.png',
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) =>
-                        const Icon(Icons.directions_car, size: 36),
+                        const Icon(Icons.directions_car, size: 40),
                   ),
                 ),
                 const SizedBox(height: 16),

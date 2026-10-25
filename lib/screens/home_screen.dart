@@ -136,7 +136,8 @@ class _HomeScreenState extends State<HomeScreen> {
         ? 'Hola Asistencia Vehicular Nic, necesito asistencia para *$serviceName* por favor.'
         : 'Hola Asistencia Vehicular Nic, necesito asistencia vehicular.';
     final uri = Uri.parse(
-        'https://wa.me/$number?text=${Uri.encodeComponent(message)}');
+      'https://wa.me/$number?text=${Uri.encodeComponent(message)}',
+    );
 
     try {
       // webOnlyWindowName: '_blank' fuerza a que se abra en una nueva pestaña
@@ -189,13 +190,14 @@ class _HomeScreenState extends State<HomeScreen> {
             Container(
               width: 32,
               height: 32,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.white24),
+              decoration: const BoxDecoration(
+                shape: BoxShape
+                    .circle, // Fuerza al contenedor a ser un círculo perfecto
+                // Se eliminó el border y el borderRadius
               ),
               clipBehavior: Clip.antiAlias,
               child: Image.asset(
-                'assets/images/logocircular.jpeg',
+                'assets/images/logocircular.png', // Cambia tu archivo a PNG transparente
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) => const Icon(
                   Icons.directions_car,
@@ -326,7 +328,7 @@ class _HeroWaveClipper extends CustomClipper<Path> {
     // Primera curva: de derecha al centro, formando un pico hacia arriba
     path.quadraticBezierTo(
       size.width * 0.75, // control X
-      size.height - 5,  // control Y (pico hacia arriba)
+      size.height - 5, // control Y (pico hacia arriba)
       size.width * 0.5, // fin X
       size.height - 45, // fin Y
     );
@@ -334,7 +336,7 @@ class _HeroWaveClipper extends CustomClipper<Path> {
     path.quadraticBezierTo(
       size.width * 0.25, // control X
       size.height - 90, // control Y (valle hacia abajo)
-      0,                 // fin X
+      0, // fin X
       size.height - 55, // fin Y
     );
     path.close();
@@ -502,14 +504,8 @@ class _WaveTopClipper extends CustomClipper<Path> {
     final path = Path();
     // Empieza desde arriba-izquierda con la ola
     path.moveTo(0, 60);
-    path.quadraticBezierTo(
-      size.width * 0.25, 5,
-      size.width * 0.5, 45,
-    );
-    path.quadraticBezierTo(
-      size.width * 0.75, 88,
-      size.width, 30,
-    );
+    path.quadraticBezierTo(size.width * 0.25, 5, size.width * 0.5, 45);
+    path.quadraticBezierTo(size.width * 0.75, 88, size.width, 30);
     path.lineTo(size.width, size.height);
     path.lineTo(0, size.height);
     path.close();
@@ -719,16 +715,16 @@ class _FeatureCardState extends State<_FeatureCard> {
             : const Offset(0, 0.22),
         duration: _isVisible
             ? (_hovered
-                ? const Duration(milliseconds: 200)
-                : const Duration(milliseconds: 650))
+                  ? const Duration(milliseconds: 200)
+                  : const Duration(milliseconds: 650))
             : const Duration(milliseconds: 650),
         curve: Curves.easeOutCubic,
         child: AnimatedScale(
           scale: _isVisible ? (_hovered ? 1.025 : 1.0) : 0.94,
           duration: _isVisible
               ? (_hovered
-                  ? const Duration(milliseconds: 200)
-                  : const Duration(milliseconds: 650))
+                    ? const Duration(milliseconds: 200)
+                    : const Duration(milliseconds: 650))
               : const Duration(milliseconds: 650),
           curve: Curves.easeOutCubic,
           child: Material(
@@ -741,21 +737,17 @@ class _FeatureCardState extends State<_FeatureCard> {
                   setState(() => _hovered = highlighted),
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 250),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 22),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 22,
+                ),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: _hovered
-                        ? [
-                            const Color(0xFF1E293B),
-                            const Color(0xFF0F172A),
-                          ]
-                        : [
-                            const Color(0xFF1B2232),
-                            const Color(0xFF121722),
-                          ],
+                        ? [const Color(0xFF1E293B), const Color(0xFF0F172A)]
+                        : [const Color(0xFF1B2232), const Color(0xFF121722)],
                   ),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
@@ -771,9 +763,8 @@ class _FeatureCardState extends State<_FeatureCard> {
                       offset: Offset(0, _hovered ? 12 : 7),
                     ),
                     BoxShadow(
-                      color: const Color(AppConfig.cyanColorHex).withAlpha(
-                        _hovered ? 85 : 20,
-                      ),
+                      color: const Color(AppConfig.cyanColorHex)
+                          .withAlpha(_hovered ? 85 : 20),
                       blurRadius: _hovered ? 20 : 10,
                       spreadRadius: _hovered ? 1 : 0,
                       offset: const Offset(0, 3),
@@ -789,19 +780,22 @@ class _FeatureCardState extends State<_FeatureCard> {
                       height: 54,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color:
-                            const Color(AppConfig.primaryColorHex).withAlpha(40),
+                        color: const Color(AppConfig.primaryColorHex)
+                            .withAlpha(40),
                         border: Border.all(
                           color: _hovered
                               ? const Color(AppConfig.cyanColorHex)
-                              : const Color(AppConfig.cyanColorHex).withAlpha(120),
+                              : const Color(AppConfig.cyanColorHex)
+                                    .withAlpha(120),
                           width: 1.5,
                         ),
                         boxShadow: [
                           BoxShadow(
                             color: _hovered
-                                ? const Color(AppConfig.cyanColorHex).withAlpha(70)
-                                : const Color(AppConfig.primaryColorHex).withAlpha(30),
+                                ? const Color(AppConfig.cyanColorHex)
+                                      .withAlpha(70)
+                                : const Color(AppConfig.primaryColorHex)
+                                      .withAlpha(30),
                             blurRadius: 12,
                           ),
                         ],
