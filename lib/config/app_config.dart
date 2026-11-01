@@ -11,7 +11,7 @@ class AppConfig {
   static const String slogan = 'Tu tranquilidad en el camino';
 
   /// Número de teléfono de contacto (con código de país para WhatsApp)
-  static const String phoneNumber = '+50581695674';
+  static const String phoneNumber = '+50577023443';
 
   /// Email de contacto
   static const String email = 'asistenciavehicularnic@gmail.com';
@@ -21,7 +21,7 @@ class AppConfig {
 
   /// URL de Google Reviews
   static const String googleReviewUrl =
-      'https://g.page/r/TU_GOOGLE_PLACE_ID/review';
+      'https://g.page/r/CZh6lq5mpPm1EBM/review';
 
   /// Horario de atención
   static const String schedule = 'Lunes a Sabado, 6:00 AM - 10:00 PM';
