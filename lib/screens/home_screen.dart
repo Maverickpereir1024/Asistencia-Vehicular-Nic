@@ -130,8 +130,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _openWhatsApp([String? serviceName]) async {
-    // El número debe ir con el código de país pero sin el '+' (Ej: 50581695674)
-    const String number = '50581695674';
+    // El número debe ir con el código de país pero sin el '+' (Ej: 50512345678)
+    const String number = '50577023443';
     final String message = serviceName != null
         ? 'Hola Asistencia Vehicular Nic, necesito asistencia para *$serviceName* por favor.'
         : 'Hola Asistencia Vehicular Nic, necesito asistencia vehicular.';
